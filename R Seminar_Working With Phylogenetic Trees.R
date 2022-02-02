@@ -88,11 +88,11 @@ plotTree(vert.tree.with.root, type="cladogram")
 
 ##Now, let's work with some real trees and data
 getwd() ##will show you where you are
-setwd("~/Dropbox (Personal)/My Mac (ea-emc39MBP.local)/Desktop/R Seminar_Phylogenetic Trees")
 list.files() ##lists the files in the directory where we are located
 
 ##read in the phylogeny; this tree is from Burleigh et al. 2015, "Building the avian tree of life using a 
 ##large-scale, sparse supermatrix," Molecular Phylogenetics and Evolution, 84: 53-63.
+# often you'll download like 1000 trees, and you just get what you want from tree[[#]]
 burleigh.tree<-read.tree(file="Burleigh_tree.tre")
 str(burleigh.tree) ##check out our tree
 
@@ -155,6 +155,9 @@ chk<-name.check(pruned.tree, bird.trait.data)
 ##the tip labels of the pruned tree and the species trait data
 chk #Returns a list of things that are in the tree but not the data,
 ##and another list of things that are in the data but not the tree
+#can test this
+test <- bird.trait.data[-47,]
+name.check(pruned.tree, test)
 
 ##Now we have a pruned tree for our species trait data!
 ##We can...save the pruned tree for further analyses
@@ -172,7 +175,6 @@ plotTree(pruned.tree, fsize=0.4, ftype="i", type="fan")
 ultrametric.tree<-force.ultrametric(pruned.tree)
 plotTree(ultrametric.tree, fsize=0.4, ftype="i")
 
-
 ##...extract a clade
 ##To do this we need to know node numbers
 plotTree(pruned.tree, fsize=0.4, ftype="i")
@@ -181,7 +183,6 @@ nodelabels(cex=0.4)##add node labels
 ##The common ancestor of the passerines in our tree is node 93
 passerines<-extract.clade(pruned.tree, node=93)
 plotTree(passerines, fsize=0.5, ftype="i")
-
 
 ###...display trait data
 ##So, let's go back to our complete tree and plot some variables
@@ -203,6 +204,13 @@ FORAGING<-FORAGING[pruned.tree$tip.label,]
 ##Check manually that tip labels and trait data are in the same order
 pruned.tree$tip.label
 FORAGING
+#can also ask R to pull these out for you
+which(pruned.tree$tip.label!=rownames(FORAGING))
+#testing
+foraging.test <- FORAGING
+rownames(foraging.test)[47] <- "poop"
+which(pruned.tree$tip.label!=rownames(foraging.test))
+#yes it works!
 
 plotTree(pruned.tree, fsize=0.4, ftype="i", offset=0.5)#plot the tree
 tiplabels(pie=FORAGING[pruned.tree$tip.label,], cex=0.4) #Add circles for the discrete character
